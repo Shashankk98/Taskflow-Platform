@@ -1,0 +1,32 @@
+namespaceName: task-manager
+backend:
+  replicas: 3
+  image: task-manager-backend
+  tag: latest
+  port: 8080
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+frontend:
+  replicas: 2
+  image: task-manager-frontend
+  tag: latest
+  port: 80
+  nodePort: 30080
+
+postgres:
+  image: postgres
+  tag: "16"
+  port: 5432
+  dbName: taskmanager
+  username: tera
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 10
+  cpuUtilization: 50

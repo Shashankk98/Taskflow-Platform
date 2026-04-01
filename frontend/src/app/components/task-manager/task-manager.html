@@ -1,0 +1,109 @@
+<div class="tm-container">
+
+  <!-- Header -->
+  <div class="tm-header">
+    <div class="tm-header-left">
+      <h1>Task Manager</h1>
+      <p>Manage your tasks efficiently</p>
+    </div>
+    <button class="btn-primary" (click)="openForm()">+ New Task</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="tm-stats">
+    <div class="stat-card">
+      <span class="stat-number">{{ tasks.length }}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-card todo">
+      <span class="stat-number">{{ getCount('TODO') }}</span>
+      <span class="stat-label">Todo</span>
+    </div>
+    <div class="stat-card progress">
+      <span class="stat-number">{{ getCount('IN_PROGRESS') }}</span>
+      <span class="stat-label">In Progress</span>
+    </div>
+    <div class="stat-card done">
+      <span class="stat-number">{{ getCount('DONE') }}</span>
+      <span class="stat-label">Done</span>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="tm-filters">
+    <button [class.active]="activeFilter === 'ALL'" (click)="applyFilter('ALL')">All</button>
+    <button [class.active]="activeFilter === 'TODO'" (click)="applyFilter('TODO')">Todo</button>
+    <button [class.active]="activeFilter === 'IN_PROGRESS'" (click)="applyFilter('IN_PROGRESS')">In Progress</button>
+    <button [class.active]="activeFilter === 'DONE'" (click)="applyFilter('DONE')">Done</button>
+  </div>
+
+  <!-- Task List -->
+  <div class="tm-tasks">
+    <div *ngIf="filteredTasks.length === 0" class="empty-state">
+      <p>No tasks found! Click "+ New Task" to add one.</p>
+    </div>
+
+    <div class="task-card" *ngFor="let task of filteredTasks">
+      <div class="task-card-left">
+        <span [class]="'status-badge ' + getStatusColor(task.status)">
+          {{ task.status === 'IN_PROGRESS' ? 'In Progress' : task.status === 'TODO' ? 'Todo' : 'Done' }}
+        </span>
+        <h3>{{ task.title }}</h3>
+        <p *ngIf="task.description">{{ task.description }}</p>
+        <span class="task-date">{{ task.createdAt | date:'dd MMM yyyy' }}</span>
+      </div>
+      <div class="task-card-actions">
+        <button class="btn-edit" (click)="editTask(task)">Edit</button>
+        <button class="btn-delete" (click)="deleteTask(task.id!)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Form -->
+  <div class="modal-overlay" *ngIf="showForm" (click)="showForm = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditing ? 'Edit Task' : 'New Task' }}</h2>
+        <button class="modal-close" (click)="showForm = false">&#x2715;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Title *</label>
+          <input
+            type="text"
+            [(ngModel)]="newTask.title"
+            placeholder="Enter task title..."
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea
+            [(ngModel)]="newTask.description"
+            placeholder="Enter description (optional)..."
+            class="form-input"
+            rows="3">
+          </textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select [(ngModel)]="newTask.status" class="form-input">
+            <option value="TODO">Todo</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="showForm = false">Cancel</button>
+        <button class="btn-primary" (click)="saveTask()">
+          {{ isEditing ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
