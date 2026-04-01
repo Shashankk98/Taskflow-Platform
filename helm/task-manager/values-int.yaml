@@ -1,0 +1,12 @@
+backend:
+  replicas: 2
+  tag: 1.0.0-RC
+
+frontend:
+  replicas: 1
+  tag: 1.0.0-RC
+
+hpa:
+  minReplicas: 1
+  maxReplicas: 5
+  cpuUtilization: 70

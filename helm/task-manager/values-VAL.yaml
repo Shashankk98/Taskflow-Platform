@@ -1,0 +1,19 @@
+backend:
+  replicas: 3
+  tag: 1.0.0-RC2
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+
+frontend:
+  replicas: 2
+  tag: 1.0.0-RC2
+
+hpa:
+  minReplicas: 2
+  maxReplicas: 15
+  cpuUtilization: 60
