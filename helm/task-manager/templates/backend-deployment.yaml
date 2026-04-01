@@ -13,11 +13,16 @@ spec:
       labels:
         app: backend
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox
+          command: [ 'sh', '-c', 'until nc -z postgres-service 5432; do echo waiting for postgres; sleep 2; done' ]
       containers:
         - name: backend
           image: "{{ .Values.backend.image }}:{{ .Values.backend.tag }}"
+          imagePullPolicy: Never
           ports:
-            - containerPort: "{{ .Values.backend.port }}"
+            - containerPort: {{ .Values.backend.port }}
           resources:
             requests:
               cpu: "{{ .Values.backend.resources.requests.cpu }}"
